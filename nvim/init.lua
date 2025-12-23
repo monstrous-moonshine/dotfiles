@@ -16,6 +16,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- Configure LSP
+vim.opt.completeopt = { 'menuone', 'popup' }
 vim.lsp.config('ccls', {
     init_options = {
         cache = {
@@ -23,6 +24,14 @@ vim.lsp.config('ccls', {
         }
     },
     filetypes = { 'c', 'cc', 'cpp' },
+    on_attach = function(client, bufnr)
+        vim.lsp.completion.enable(true, client.id, bufnr, {
+            autotrigger = true,
+            convert = function(item)
+                return { abbr = item.label:gsub('%b()', '') }
+            end,
+        })
+    end,
 })
 vim.lsp.enable('ccls')
 
