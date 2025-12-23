@@ -67,3 +67,45 @@ vim.api.nvim_create_autocmd('BufReadPost', {
         end
     end,
 })
+
+vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'clojure', 'scheme' },
+    callback = function()
+        vim.keymap.set('i', '(', '()<left>')
+        vim.keymap.set('i', '[', '[]<left>')
+        vim.keymap.set('i', '{', '{}<left>')
+        -- If char at cursor matches src, skip over. Otherwise, insert tgt.
+        -- For closing parens, src == tgt. That is, if we're already at a
+        -- closing paren, simply skip over. Otherwise, insert it.
+        -- For quotes, if we're already at one we'd skip over. But if we're not,
+        -- we do the same thing we do for opening parens -- insert two and then
+        -- move left to leave cursor in middle.
+        local function skip_or_insert(src, tgt)
+            -- getpos() returns [_, lnum, col, _]. lnum and col are 1-indexed.
+            local col = vim.fn.getpos('.')[3]
+            -- string.sub() start and end are inclusive, 1-indexed
+            local txt = vim.fn.getline('.'):sub(col, col)
+            -- uncomment and view with :messages to debug
+            -- vim.print(txt)
+            if txt == src then
+                return '<right>'
+            else
+                return tgt
+            end
+        end
+        local function map_close_paren(s)
+            vim.keymap.set('i', s, function()
+                return skip_or_insert(s, s)
+            end, {expr = true})
+        end
+        map_close_paren(')')
+        map_close_paren(']')
+        map_close_paren('}')
+        local function map_quote(s)
+            vim.keymap.set('i', s, function()
+                return skip_or_insert(s, s .. s .. '<left>')
+            end, {expr = true})
+        end
+        map_quote('"')
+    end,
+})
