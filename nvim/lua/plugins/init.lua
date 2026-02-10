@@ -1,12 +1,12 @@
 return {
     {
-        "morhetz/gruvbox",
-        lazy = false,
+        "ellisonleao/gruvbox.nvim",
         priority = 1000,
-        config = function()
-            vim.g.gruvbox_contrast_dark = 'hard'
-            vim.cmd.colorscheme "gruvbox"
-        end,
+        config = true,
+        opts = {
+            italic = { strings = false },
+            contrast = "hard",
+        },
     },
     {
         "nvim-treesitter/nvim-treesitter",
@@ -15,6 +15,13 @@ return {
         build = ":TSUpdate",
     },
     { "neovim/nvim-lspconfig", },
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = {
+            { 'hrsh7th/cmp-nvim-lsp' },
+            { 'hrsh7th/cmp-buffer' },
+        },
+    },
     { "nvim-tree/nvim-web-devicons", },
     { "nvim-tree/nvim-tree.lua", },
     -- { "vim-airline/vim-airline", },
@@ -22,9 +29,9 @@ return {
         "Olical/conjure",
         lazy = true,
         ft = {"clojure", "scheme"},
-        -- init = function()
-        --     vim.g["conjure#filetype#scheme"] = "conjure.client.guile.socket"
-        --     vim.g["conjure#client#guile#socket#pipename"] = "/tmp/.guile-repl.socket"
-        -- end,
     },
+    -- { "PaterJason/nvim-treesitter-sexp", },
+    -- { "guns/vim-sexp", },
+    -- { "tpope/vim-sexp-mappings-for-regular-people", },
+    -- { "Raimondi/delimitMate", },
 }
